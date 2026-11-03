@@ -12,7 +12,7 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 
 const show = {
   id: 'show-1',
-  name: 'Sample: Night Shift Notes',
+  name: 'Night Shift Notes',
   description: 'Sample',
   profile_img_link: 'generated',
   release_schedule: 'Weekly',

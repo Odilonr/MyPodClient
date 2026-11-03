@@ -17,7 +17,6 @@ import {
 } from '@/home/layout'
 import { useLibrary } from '@/library/LibraryContext'
 import { usePlayer } from '@/player/PlayerContext'
-import { isSample } from '@/utils/format'
 
 const LATEST_COUNT = 24
 const LOGIN_ONLY_SECTIONS: SectionType[] = ['recent', 'favorites', 'playlists']
@@ -103,7 +102,6 @@ export function HomePage () {
 
   const isEditing = draft !== null
   const sections = draft ?? savedLayout
-  const hasSamples = shows !== null && shows.length > 0 && shows.some((show) => isSample(show.name))
 
   const choosableItems = useCallback((type: SectionType): ChoosableItem[] => {
     switch (type) {
@@ -210,11 +208,9 @@ export function HomePage () {
           <Button variant="secondary" leadingIcon={RiEqualizer2Line} className="mb-3" onClick={startEditing}>Customize home</Button>
         )}
       </div>
-      {hasSamples && (
-        <p className="max-w-[65ch] text-body-regular text-text-secondary">
-          Shows labeled as samples were made for this demo. They are not real podcasts, and their audio is a generated tone.
-        </p>
-      )}
+      <p className="max-w-[65ch] text-body-regular text-text-secondary">
+        These shows come from their public RSS feeds, and each episode plays from the show's own website. MyPod is a portfolio project and is not affiliated with them.
+      </p>
 
       {failed ? (
         <LoadError message="The shows could not be loaded. Check that the API is running." onRetry={load} />
@@ -223,7 +219,7 @@ export function HomePage () {
           {[0, 1, 2, 3, 4].map((item) => <Skeleton key={item} className="h-72 w-72 shrink-0" />)}
         </div>
       ) : shows.length === 0 ? (
-        <p className="py-8 text-body-regular text-text-secondary">There are no shows yet. Add sample shows with npm run seed in the API folder.</p>
+        <p className="py-8 text-body-regular text-text-secondary">There are no shows yet. They load when the server starts, so check back in a minute.</p>
       ) : isEditing ? (
         <>
           {sections.map((section, index) => (

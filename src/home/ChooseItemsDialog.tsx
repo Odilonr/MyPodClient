@@ -1,7 +1,6 @@
 import { Button } from '@/components/base/buttons/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/base/modal/modal'
 import { Switch } from '@/components/base/switch/switch'
-import { withoutSampleLabel } from '@/utils/format'
 
 export interface ChoosableItem {
   id: string
@@ -29,7 +28,7 @@ export function ChooseItemsDialog ({ title, items, hiddenItems, onChange, onClos
                 isSelected={!hiddenItems.includes(item.id)}
                 onChange={(visible) => onChange(item.id, visible)}
               >
-                <span className="truncate text-body-medium">{withoutSampleLabel(item.label)}</span>
+                <span className="truncate text-body-medium">{item.label}</span>
               </Switch>
             </li>
           ))}

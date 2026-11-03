@@ -5,3 +5,5 @@ if (!apiUrl) {
 }
 
 export const API_URL = apiUrl.replace(/\/$/, '')
+
+export const uploadsEnabled = () => import.meta.env.VITE_UPLOADS_ENABLED === 'true'

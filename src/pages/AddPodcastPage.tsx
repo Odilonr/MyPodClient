@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router'
 import { ApiError, getFeeds, importFeed, previewFeed } from '@/api/client'
 import type { FeedPreview, Show } from '@/api/types'
 import { useAuth } from '@/auth/AuthContext'
+import { uploadsEnabled } from '@/config'
 import { Button } from '@/components/base/buttons/button'
 import { Input } from '@/components/base/input/input'
 import { Cover } from '@/components/Cover'
@@ -126,13 +127,13 @@ export function AddPodcastPage () {
             </form>
           )}
 
-          <section className="mt-10">
+          {uploadsEnabled() && <section className="mt-10">
             <h2 className="mb-1 font-display text-[28px] font-bold leading-tight tracking-tight">From an audio file</h2>
             <p className="mb-4 max-w-[65ch] text-body-regular text-text-secondary">
               Upload an episode you already have. MyPod fills in what it can from the file, and you choose the show and category.
             </p>
             <UploadAudio />
-          </section>
+          </section>}
 
           {imported.length > 0 && (
             <section className="mt-10">

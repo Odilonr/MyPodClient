@@ -52,6 +52,19 @@ describe('adding a podcast', () => {
     return user
   }
 
+  it('hides audio uploads while they are turned off', async () => {
+    renderPage()
+    await screen.findByLabelText(/RSS feed link/)
+    expect(screen.queryByLabelText('Audio file')).not.toBeInTheDocument()
+  })
+
+  it('shows audio uploads when they are turned on', async () => {
+    vi.stubEnv('VITE_UPLOADS_ENABLED', 'true')
+    renderPage()
+    expect(await screen.findByLabelText('Audio file')).toBeInTheDocument()
+    vi.unstubAllEnvs()
+  })
+
   it('asks a guest to log in', async () => {
     signedIn = false
     renderPage()

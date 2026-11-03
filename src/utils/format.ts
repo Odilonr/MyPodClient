@@ -28,5 +28,3 @@ export function formatDate (value: string) {
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-export const isSample = (showName: string) => showName.startsWith('Sample: ')
-export const withoutSampleLabel = (showName: string) => showName.replace(/^Sample: /, '')

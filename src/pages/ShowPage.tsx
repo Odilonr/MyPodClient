@@ -11,7 +11,6 @@ import { EpisodeList } from '@/components/EpisodeList'
 import { LoadError } from '@/components/LoadError'
 import { ImportedShowControls } from '@/library/ImportedShowControls'
 import { UploadDetailsForm } from '@/library/UploadDetailsForm'
-import { isSample, withoutSampleLabel } from '@/utils/format'
 
 type PageState =
   | { kind: 'loading' }
@@ -81,14 +80,13 @@ export function ShowPage () {
       <div className="grid items-end gap-6 pb-8 pt-6 md:grid-cols-[280px_1fr]">
         <Cover seed={show.id} image={show.profile_img_link} className="w-full max-w-[280px] rounded-sm" />
         <div>
-          {isSample(show.name) && <p className="mb-2 text-body-medium text-text-secondary">Sample show</p>}
           <h1 className="font-display text-[clamp(2.25rem,6vw,4.25rem)] font-bold leading-[0.98] tracking-tight">
-            {withoutSampleLabel(show.name)}
+            {show.name}
           </h1>
           <p className="mt-3 text-body-medium text-text-secondary">
             {isImported
               ? <>{isUpload ? 'Uploaded by you' : <>By {show.host_name}. Added by you from an RSS feed</>}. {show.show_type}.</>
-              : <>{show.host_name}, {show.studio}. {show.release_schedule}.</>}
+              : <>By {show.host_name}. {show.show_type}.</>}
           </p>
           {show.source_link && (
             <a href={show.source_link} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-body-medium text-accent-600 underline underline-offset-2">

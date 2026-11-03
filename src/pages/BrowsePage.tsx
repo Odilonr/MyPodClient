@@ -9,7 +9,6 @@ import { Skeleton } from '@/components/base/skeleton/skeleton'
 import { LoadError } from '@/components/LoadError'
 import { ShowGrid } from '@/components/ShowGrid'
 import { cx } from '@/utils/cx'
-import { withoutSampleLabel } from '@/utils/format'
 
 export function BrowsePage () {
   const { status } = useAuth()
@@ -33,7 +32,7 @@ export function BrowsePage () {
     const term = search.trim().toLowerCase()
     return (shows ?? []).filter((show) => (
       (!topic || show.show_type === topic) &&
-      (!term || withoutSampleLabel(show.name).toLowerCase().includes(term))
+      (!term || show.name.toLowerCase().includes(term))
     ))
   }, [search, shows, topic])
 
