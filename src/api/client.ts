@@ -1,5 +1,5 @@
 import { API_URL } from '@/config'
-import type { Episode, FieldError, Show } from './types'
+import type { Episode, FieldError, Playlist, PlaylistDetail, RecentEpisode, Show } from './types'
 
 export class ApiError extends Error {
   status: number
@@ -92,8 +92,8 @@ export async function getShowEpisodes (id: string) {
   return readJson<Episode[]>(await send(`/shows/${encodeURIComponent(id)}/episodes`))
 }
 
-export async function getLatestEpisodes () {
-  return readJson<Episode[]>(await send('/episodes?type=Latest'))
+export async function getLatestEpisodes (limit = 8) {
+  return readJson<Episode[]>(await send(`/episodes?type=Latest&limit=${limit}`))
 }
 
 export async function getPlayPosition (episodeId: string) {
@@ -104,6 +104,49 @@ export async function getPlayPosition (episodeId: string) {
 export async function savePlayPosition (episodeId: string, seconds: number) {
   const query = new URLSearchParams({ episodeID: episodeId, new: String(Math.floor(seconds)) })
   await readJson(await sendWithLogin(`/episodes/updatetime?${query}`, { method: 'POST' }))
+}
+
+export async function getRecentEpisodes () {
+  return readJson<RecentEpisode[]>(await sendWithLogin('/me/recent'))
+}
+
+export async function getFavorites () {
+  return readJson<Episode[]>(await sendWithLogin('/me/favorites'))
+}
+
+export async function addFavorite (episodeId: string) {
+  await readJson(await sendWithLogin(`/me/favorites/${encodeURIComponent(episodeId)}`, { method: 'PUT' }))
+}
+
+export async function removeFavorite (episodeId: string) {
+  await readJson(await sendWithLogin(`/me/favorites/${encodeURIComponent(episodeId)}`, { method: 'DELETE' }))
+}
+
+export async function getPlaylists () {
+  return readJson<Playlist[]>(await sendWithLogin('/me/playlists'))
+}
+
+export async function createPlaylist (name: string) {
+  const response = await sendWithLogin('/me/playlists', { method: 'POST', body: JSON.stringify({ name }) })
+  return readJson<Playlist>(response)
+}
+
+export async function getPlaylist (id: string) {
+  return readJson<PlaylistDetail>(await sendWithLogin(`/me/playlists/${encodeURIComponent(id)}`))
+}
+
+export async function deletePlaylist (id: string) {
+  await readJson(await sendWithLogin(`/me/playlists/${encodeURIComponent(id)}`, { method: 'DELETE' }))
+}
+
+export async function addToPlaylist (playlistId: string, episodeId: string) {
+  const path = `/me/playlists/${encodeURIComponent(playlistId)}/episodes/${encodeURIComponent(episodeId)}`
+  await readJson(await sendWithLogin(path, { method: 'PUT' }))
+}
+
+export async function removeFromPlaylist (playlistId: string, episodeId: string) {
+  const path = `/me/playlists/${encodeURIComponent(playlistId)}/episodes/${encodeURIComponent(episodeId)}`
+  await readJson(await sendWithLogin(path, { method: 'DELETE' }))
 }
 
 export const audioUrl = (episodeId: string) => `${API_URL}/episodes/${encodeURIComponent(episodeId)}/audio`

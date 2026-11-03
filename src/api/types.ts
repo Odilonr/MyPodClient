@@ -20,6 +20,20 @@ export interface Episode {
   profile: string
 }
 
+export interface RecentEpisode extends Episode {
+  currentplaytime: number
+}
+
+export interface Playlist {
+  id: string
+  name: string
+  episode_count?: number
+}
+
+export interface PlaylistDetail extends Playlist {
+  episodes: Episode[]
+}
+
 export interface FieldError {
   field: string
   message: string

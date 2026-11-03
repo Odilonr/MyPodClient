@@ -1,11 +1,11 @@
 import { cx } from '@/utils/cx'
 
 const PALETTES = [
-  { ground: '#2b48d4', shape: '#ffe27a', detail: '#94a6f0' },
-  { ground: '#ffe27a', shape: '#131a3a', detail: '#ff4f2e' },
-  { ground: '#131a3a', shape: '#94a6f0', detail: '#ffe27a' },
-  { ground: '#ff4f2e', shape: '#fff6d6', detail: '#131a3a' },
-  { ground: '#bac6f6', shape: '#2b48d4', detail: '#131a3a' }
+  { ground: '#2b48d4', shape: '#ffe27a', detail: '#94a6f0', text: '#ffffff' },
+  { ground: '#ffe27a', shape: '#131a3a', detail: '#ff4f2e', text: '#131a3a' },
+  { ground: '#131a3a', shape: '#94a6f0', detail: '#ffe27a', text: '#ffffff' },
+  { ground: '#ff4f2e', shape: '#fff6d6', detail: '#131a3a', text: '#131a3a' },
+  { ground: '#bac6f6', shape: '#2b48d4', detail: '#131a3a', text: '#131a3a' }
 ]
 
 function hash (text: string) {
@@ -57,6 +57,8 @@ function Hills ({ shape, detail }: { shape: string, detail: string }) {
 }
 
 const MOTIFS = [Waves, Bars, Dial, Hills]
+
+export const coverPalette = (seed: string) => PALETTES[hash(seed) % PALETTES.length]
 
 // Draws original cover art from the show's ID. A show with its own image link,
 // such as an imported feed, shows that image instead.
