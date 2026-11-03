@@ -129,7 +129,7 @@ export async function fetchaudioAndPlay (episodeID) {
 
     const episode = await response.json()
     audio.crossOrigin="anonymous"
-    audio.setAttribute("src", `${API_URL}/episodes/audio?path=${episode.audio_link}`)
+    audio.setAttribute("src", `${API_URL}/episodes/${episode.id}/audio`)
     audio.setAttribute("id", `${episodeID}`)
     
     audio.addEventListener('loadedmetadata', ()=> {
