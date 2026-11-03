@@ -16,8 +16,10 @@ This repo is the frontend. The API is in a separate repo.
 - See recently listened episodes
 - Save favorites
 - Create playlists, add and remove episodes, and delete playlists
-- Add a public podcast by pasting its RSS feed link, preview it, and choose its name and category before saving
+- Add a public podcast, audio or video, by pasting its RSS feed link, preview it, and choose its name and category before saving
 - Edit an added show's details, check it for new episodes, or remove it
+- Upload your own audio files: MyPod fills in details from the file, and you choose the title, show and category
+- Watch video episodes in a small panel that can be hidden
 - Customize your home page: move sections with arrows or by dragging, hide them, choose small or large, and choose what appears inside
 - Use it on a phone-sized screen
 
@@ -63,7 +65,7 @@ The player's progress bar is a radio dial with tick marks and a moving orange ne
 ## What is not done yet
 
 - **More of the build-your-own pod:** the home page can already be customized. Next come more pages, free card resizing, notes, and collections that you fill yourself.
-- **More ways to add podcasts:** RSS feeds work today. Next come audio files you already own, then OPML files exported from other apps. Shows only get new episodes when you ask, and single episodes can't be edited yet.
+- **More ways to add podcasts:** RSS feeds and audio uploads work today. OPML files exported from other apps come next. Feed shows only get new episodes when you ask, and single feed episodes can't be edited yet. Uploads are one file at a time, with no progress bar, and video files can't be uploaded. YouTube links can't be added, because their feeds have no playable file.
 - **Listening with no internet:** saving episodes in the browser for offline playback.
 - **Deployment:** a live version on a cloud provider, with HTTPS, backups and monitoring.
 
