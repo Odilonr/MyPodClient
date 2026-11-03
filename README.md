@@ -2,7 +2,9 @@
 
 MyPod is a podcast web app that I am building as a portfolio project. It started as an old practice clone of another podcast app, and I rebuilt it with its own design, name and features.
 
-**This is a portfolio project. It has no real users, and it is not deployed yet.** The shows come from their public RSS feeds, with their original credit and art, and episodes play from each show's own servers. MyPod is not affiliated with these shows.
+**Live demo: https://34-236-85-162.sslip.io**
+
+**This is a portfolio project. It has no real users.** The shows come from their public RSS feeds, with their original credit and art, and episodes play from each show's own servers. MyPod is not affiliated with these shows.
 
 This repo is the frontend. The API is in a separate repo.
 
@@ -39,7 +41,7 @@ npm run dev
 
 Then open http://localhost:5173. Run the tests with `npm test`.
 
-`VITE_API_URL` in `.env` sets the address of the API, so nothing is hardcoded.
+`VITE_API_URL` in `.env` sets the address of the API, so nothing is hardcoded. On the live site the API is at `/api` on the same address, so the login cookie is first-party. The API README explains the deployment.
 
 ## Security decisions
 
@@ -67,6 +69,5 @@ The player's progress bar is a radio dial with tick marks and a moving orange ne
 - **More of the build-your-own pod:** the home page can already be customized. Next come more pages, free card resizing, notes, and collections that you fill yourself.
 - **More ways to add podcasts:** RSS feeds and audio uploads work today. OPML files exported from other apps come next. Feed shows only get new episodes when you ask, and single feed episodes can't be edited yet. Uploads are one file at a time, with no progress bar, and video files can't be uploaded. YouTube links can't be added, because their feeds have no playable file.
 - **Listening with no internet:** saving episodes in the browser for offline playback.
-- **Deployment:** a live version on a cloud provider, with HTTPS, backups and monitoring.
 
 There are also no popularity charts, because with no real users those numbers would be invented.
