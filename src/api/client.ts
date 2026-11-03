@@ -1,4 +1,5 @@
 import { API_URL } from '@/config'
+import type { LayoutSection } from '@/home/layout'
 import type { Episode, FieldError, Playlist, PlaylistDetail, RecentEpisode, Show } from './types'
 
 export class ApiError extends Error {
@@ -147,6 +148,15 @@ export async function addToPlaylist (playlistId: string, episodeId: string) {
 export async function removeFromPlaylist (playlistId: string, episodeId: string) {
   const path = `/me/playlists/${encodeURIComponent(playlistId)}/episodes/${encodeURIComponent(episodeId)}`
   await readJson(await sendWithLogin(path, { method: 'DELETE' }))
+}
+
+export async function getLayout () {
+  return readJson<{ sections: LayoutSection[] }>(await sendWithLogin('/me/layout'))
+}
+
+export async function saveLayout (sections: LayoutSection[]) {
+  const response = await sendWithLogin('/me/layout', { method: 'PUT', body: JSON.stringify({ sections }) })
+  return readJson<{ sections: LayoutSection[] }>(response)
 }
 
 export const audioUrl = (episodeId: string) => `${API_URL}/episodes/${encodeURIComponent(episodeId)}/audio`

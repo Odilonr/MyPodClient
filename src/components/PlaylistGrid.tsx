@@ -2,13 +2,14 @@ import { RiAddLine } from '@remixicon/react'
 import { Link } from 'react-router'
 import type { Playlist } from '@/api/types'
 import { useLibrary } from '@/library/LibraryContext'
+import { cx } from '@/utils/cx'
 import { Cover } from './Cover'
 
-export function PlaylistGrid ({ playlists }: { playlists: Playlist[] }) {
+export function PlaylistGrid ({ playlists, compact = false }: { playlists: Playlist[], compact?: boolean }) {
   const { openNewPlaylist } = useLibrary()
 
   return (
-    <ul className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-4">
+    <ul className={cx('grid gap-4', compact ? 'grid-cols-[repeat(auto-fill,minmax(110px,1fr))]' : 'grid-cols-[repeat(auto-fill,minmax(170px,1fr))]')}>
       {playlists.map((playlist) => (
         <li key={playlist.id}>
           <Link to={`/playlists/${playlist.id}`} className="group block rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring focus-visible:ring-offset-2">

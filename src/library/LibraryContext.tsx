@@ -8,6 +8,7 @@ interface LibraryValue {
   playlists: Playlist[]
   recent: RecentEpisode[]
   notice: string | null
+  showNotice: (text: string) => void
   newPlaylistFor: { episode: Episode | null } | null
   isFavorite: (episodeId: string) => boolean
   toggleFavorite: (episode: Episode) => Promise<void>
@@ -112,9 +113,9 @@ export function LibraryProvider ({ children }: { children: ReactNode }) {
   }, [refreshPlaylists])
 
   const value = useMemo(() => ({
-    favorites, playlists, recent, notice, newPlaylistFor, isFavorite, toggleFavorite, refreshRecent,
+    favorites, playlists, recent, notice, showNotice, newPlaylistFor, isFavorite, toggleFavorite, refreshRecent,
     refreshPlaylists, openNewPlaylist, closeNewPlaylist, createPlaylist, addToPlaylist, deletePlaylist
-  }), [favorites, playlists, recent, notice, newPlaylistFor, isFavorite, toggleFavorite, refreshRecent,
+  }), [favorites, playlists, recent, notice, showNotice, newPlaylistFor, isFavorite, toggleFavorite, refreshRecent,
     refreshPlaylists, openNewPlaylist, closeNewPlaylist, createPlaylist, addToPlaylist, deletePlaylist])
 
   return <LibraryContext.Provider value={value}>{children}</LibraryContext.Provider>
