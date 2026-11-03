@@ -2,7 +2,7 @@
 
 MyPod is a podcast web app that I am building as a portfolio project. It started as an old practice clone of another podcast app, and I rebuilt it with its own design, name and features.
 
-**This is a portfolio project. It has no real users, and it is not deployed yet.** The shows in the app are sample data that I made up, and their audio is a generated tone.
+**This is a portfolio project. It has no real users, and it is not deployed yet.** The shows come from their public RSS feeds, with their original credit and art, and episodes play from each show's own servers. MyPod is not affiliated with these shows.
 
 This repo is the frontend. The API is in a separate repo.
 
@@ -18,7 +18,7 @@ This repo is the frontend. The API is in a separate repo.
 - Create playlists, add and remove episodes, and delete playlists
 - Add a public podcast, audio or video, by pasting its RSS feed link, preview it, and choose its name and category before saving
 - Edit an added show's details, check it for new episodes, or remove it
-- Upload your own audio files: MyPod fills in details from the file, and you choose the title, show and category
+- Upload your own audio files, when uploads are turned on: MyPod fills in details from the file, and you choose the title, show and category. They are off by default, and `VITE_UPLOADS_ENABLED` turns them on.
 - Watch video episodes in a small panel that can be hidden
 - Customize your home page: move sections with arrows or by dragging, hide them, choose small or large, and choose what appears inside
 - Use it on a phone-sized screen
@@ -60,7 +60,7 @@ Then open http://localhost:5173. Run the tests with `npm test`.
 
 ## Design
 
-The player's progress bar is a radio dial with tick marks and a moving orange needle, and that idea runs through the rest of the design. The colors are navy, cobalt, butter yellow and signal orange on pale blue. Headings use Bricolage Grotesque and body text uses Instrument Sans. Cover art is generated from each show's ID, so the app uses no real show art.
+The player's progress bar is a radio dial with tick marks and a moving orange needle, and that idea runs through the rest of the design. The colors are navy, cobalt, butter yellow and signal orange on pale blue. Headings use Bricolage Grotesque and body text uses Instrument Sans. Show art comes from each show's own feed. A show with no art gets a cover generated from its ID.
 
 ## What is not done yet
 
