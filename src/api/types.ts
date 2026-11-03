@@ -23,6 +23,7 @@ export interface Episode {
   show_name: string
   profile: string
   audio_link?: string
+  media_type?: 'audio' | 'video'
 }
 
 export interface RecentEpisode extends Episode {

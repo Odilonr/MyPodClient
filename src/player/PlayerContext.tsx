@@ -38,7 +38,7 @@ export function PlayerProvider ({ children }: { children: ReactNode }) {
   const { status } = useAuth()
   const signedIn = status === 'signed-in'
 
-  const audioRef = useRef<HTMLAudioElement>(null)
+  const audioRef = useRef<HTMLVideoElement>(null)
   const startAtRef = useRef(0)
   const latestRequestRef = useRef(0)
 
@@ -49,6 +49,7 @@ export function PlayerProvider ({ children }: { children: ReactNode }) {
   const [duration, setDuration] = useState(0)
   const [volume, setVolumeState] = useState(readSavedVolume)
   const [message, setMessage] = useState<string | null>(null)
+  const [isVideoHidden, setIsVideoHidden] = useState(false)
 
   const savePosition = useCallback(async (episodeId: string, seconds: number) => {
     if (!signedIn) return
@@ -80,6 +81,7 @@ export function PlayerProvider ({ children }: { children: ReactNode }) {
     if (request !== latestRequestRef.current) return
 
     setEpisode(next)
+    setIsVideoHidden(false)
     setCurrentTime(startAt)
     setDuration(next.duration ?? 0)
     startAtRef.current = startAt
@@ -141,12 +143,37 @@ export function PlayerProvider ({ children }: { children: ReactNode }) {
     playEpisode, togglePlay, seek, skip, setVolume
   }), [episode, isPlaying, isLoading, currentTime, duration, volume, message, playEpisode, togglePlay, seek, skip, setVolume])
 
+  const isVideo = episode?.media_type === 'video'
+
   return (
     <PlayerContext.Provider value={value}>
       {children}
-      <audio
+      {isVideo && !isVideoHidden && (
+        <button
+          type="button"
+          onClick={() => setIsVideoHidden(true)}
+          className="fixed bottom-[19rem] right-4 z-40 rounded-full bg-ink px-3 py-1 text-caption-1-medium text-white outline-none focus-visible:outline-2 focus-visible:outline-butter sm:bottom-[21rem]"
+        >
+          Hide video
+        </button>
+      )}
+      {isVideo && isVideoHidden && (
+        <button
+          type="button"
+          onClick={() => setIsVideoHidden(false)}
+          className="fixed bottom-36 right-4 z-40 rounded-full bg-ink px-3 py-1 text-caption-1-medium text-white outline-none focus-visible:outline-2 focus-visible:outline-butter"
+        >
+          Show video
+        </button>
+      )}
+      <video
         ref={audioRef}
+        data-testid="media-player"
         preload="metadata"
+        playsInline
+        className={isVideo && !isVideoHidden
+          ? 'fixed bottom-36 right-4 z-30 aspect-video w-72 rounded-md bg-black shadow-lg sm:w-80'
+          : 'hidden'}
         onPlay={() => setIsPlaying(true)}
         onPause={(event) => {
           setIsPlaying(false)
