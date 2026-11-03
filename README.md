@@ -16,6 +16,8 @@ This repo is the frontend. The API is in a separate repo.
 - See recently listened episodes
 - Save favorites
 - Create playlists, add and remove episodes, and delete playlists
+- Add a public podcast by pasting its RSS feed link, preview it, and choose its name and category before saving
+- Edit an added show's details, check it for new episodes, or remove it
 - Customize your home page: move sections with arrows or by dragging, hide them, choose small or large, and choose what appears inside
 - Use it on a phone-sized screen
 
@@ -42,7 +44,8 @@ Then open http://localhost:5173. Run the tests with `npm test`.
 - **Access token:** it is kept in memory only, never in `localStorage`, so a script injected into the page has no saved token to find in browser storage.
 - **Refresh token:** it is kept in an httpOnly cookie, which page scripts cannot read. When the access token expires, the app gets a new one and retries once.
 - **Audio links:** the app asks for audio by episode ID. It never sends a file path.
-- **Cover images:** only `http` and `https` image links are loaded. Anything else falls back to generated art.
+- **Cover images:** only `http` and `https` image links are loaded. Anything else, or an image that fails to load, falls back to generated art.
+- **Podcasts you add:** the audio and cover art load directly from the podcast's own servers, so those servers can see your IP address, as they can in any podcast app. An `http` audio link may not play once the site runs on `https`.
 
 ## How customizing works
 
@@ -60,7 +63,8 @@ The player's progress bar is a radio dial with tick marks and a moving orange ne
 ## What is not done yet
 
 - **More of the build-your-own pod:** the home page can already be customized. Next come more pages, free card resizing, notes, and collections that you fill yourself.
-- **Import:** bring in podcasts from public RSS feeds, OPML files and audio files you already own.
+- **More ways to add podcasts:** RSS feeds work today. Next come audio files you already own, then OPML files exported from other apps. Shows only get new episodes when you ask, and single episodes can't be edited yet.
+- **Listening with no internet:** saving episodes in the browser for offline playback.
 - **Deployment:** a live version on a cloud provider, with HTTPS, backups and monitoring.
 
 There are also no popularity charts, because with no real users those numbers would be invented.
