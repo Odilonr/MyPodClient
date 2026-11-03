@@ -93,6 +93,19 @@ describe('api client', () => {
     expect(api.audioUrl({ id: 'episode-1', audio_link: 'javascript:alert(1)' })).toBe('http://api.test/episodes/episode-1/audio')
   })
 
+  it('asks the server for a private link to play an uploaded file', async () => {
+    fetchMock.mockResolvedValueOnce(json({ url: '/episodes/episode-1/audio?token=abc' }))
+    const api = await loadClient()
+    await expect(api.playableUrl({ id: 'episode-1', audio_link: 'uploaded' })).resolves.toBe('http://api.test/episodes/episode-1/audio?token=abc')
+    expect(fetchMock.mock.calls[0][0]).toBe('http://api.test/me/uploads/episode-1/stream-url')
+  })
+
+  it('needs no extra request for other episodes', async () => {
+    const api = await loadClient()
+    await expect(api.playableUrl({ id: 'episode-1', audio_link: 'https://cdn.example.com/one.mp3' })).resolves.toBe('https://cdn.example.com/one.mp3')
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
   it('refreshes an expired token on a public request', async () => {
     fetchMock
       .mockResolvedValueOnce(json({ accessToken: 'old' }))

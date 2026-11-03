@@ -1,6 +1,6 @@
 import { API_URL } from '@/config'
 import type { LayoutSection } from '@/home/layout'
-import type { Episode, FeedPreview, FieldError, Playlist, PlaylistDetail, RecentEpisode, Show } from './types'
+import type { Episode, FeedPreview, FieldError, Playlist, PlaylistDetail, RecentEpisode, Show, UploadResult } from './types'
 
 export class ApiError extends Error {
   status: number
@@ -22,7 +22,8 @@ let refreshInFlight: Promise<boolean> | null = null
 async function send (path: string, init: RequestInit = {}) {
   const headers = new Headers(init.headers)
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`)
-  if (init.body) headers.set('Content-Type', 'application/json')
+  // The browser sets the type itself for a file upload.
+  if (typeof init.body === 'string') headers.set('Content-Type', 'application/json')
   return fetch(`${API_URL}${path}`, { ...init, headers, credentials: 'include' })
 }
 
@@ -190,6 +191,28 @@ export async function refreshFeed (id: string) {
 
 export async function deleteFeed (id: string) {
   await readJson(await sendWithLogin(`/me/feeds/${encodeURIComponent(id)}`, { method: 'DELETE' }))
+}
+
+export async function uploadAudio (file: File) {
+  const body = new FormData()
+  body.append('file', file)
+  return readJson<UploadResult>(await sendWithLogin('/me/uploads', { method: 'POST', body }))
+}
+
+export async function updateUpload (id: string, details: { title?: string, showName?: string, category?: string }) {
+  const response = await sendWithLogin(`/me/uploads/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify(details) })
+  return readJson<UploadResult>(response)
+}
+
+export async function deleteUpload (id: string) {
+  return readJson<{ showRemoved: boolean }>(await sendWithLogin(`/me/uploads/${encodeURIComponent(id)}`, { method: 'DELETE' }))
+}
+
+// An uploaded file is private, so it needs a short-lived link from the server.
+export async function playableUrl (episode: Pick<Episode, 'id' | 'audio_link'>) {
+  if (episode.audio_link !== 'uploaded') return audioUrl(episode)
+  const response = await sendWithLogin(`/me/uploads/${encodeURIComponent(episode.id)}/stream-url`)
+  return `${API_URL}${(await readJson<{ url: string }>(response)).url}`
 }
 
 // Imported episodes play from the podcast's own server. Catalog episodes are

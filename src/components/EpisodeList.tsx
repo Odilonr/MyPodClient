@@ -1,4 +1,4 @@
-import { RiCloseLine, RiPauseFill, RiPlayFill } from '@remixicon/react'
+import { RiCloseLine, RiPencilLine, RiPauseFill, RiPlayFill } from '@remixicon/react'
 import { Link } from 'react-router'
 import type { Episode } from '@/api/types'
 import { usePlayer } from '@/player/PlayerContext'
@@ -12,9 +12,11 @@ interface EpisodeListProps {
   showArt?: boolean
   twoColumns?: boolean
   onRemove?: (episode: Episode) => void
+  removeLabel?: string
+  onEdit?: (episode: Episode) => void
 }
 
-export function EpisodeList ({ episodes, showArt = true, twoColumns = false, onRemove }: EpisodeListProps) {
+export function EpisodeList ({ episodes, showArt = true, twoColumns = false, onRemove, removeLabel = 'from this playlist', onEdit }: EpisodeListProps) {
   const { episode: current, isPlaying, playEpisode, togglePlay } = usePlayer()
 
   return (
@@ -50,10 +52,20 @@ export function EpisodeList ({ episodes, showArt = true, twoColumns = false, onR
                 <p>{formatDate(episode.date_added)}</p>
               </div>
               <EpisodeActions episode={episode} />
+              {onEdit && (
+                <button
+                  type="button"
+                  aria-label={`Edit ${episode.title}`}
+                  onClick={() => onEdit(episode)}
+                  className="grid size-9 shrink-0 place-items-center rounded-full outline-none hover:bg-ink/10 focus-visible:ring-2 focus-visible:ring-border-focus-ring"
+                >
+                  <RiPencilLine className="size-5" aria-hidden />
+                </button>
+              )}
               {onRemove && (
                 <button
                   type="button"
-                  aria-label={`Remove ${episode.title} from this playlist`}
+                  aria-label={`Remove ${episode.title} ${removeLabel}`}
                   onClick={() => onRemove(episode)}
                   className="grid size-9 shrink-0 place-items-center rounded-full outline-none hover:bg-ink/10 focus-visible:ring-2 focus-visible:ring-border-focus-ring"
                 >

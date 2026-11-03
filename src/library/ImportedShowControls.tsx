@@ -75,7 +75,7 @@ export function ImportedShowControls ({ show, onChanged }: ImportedShowControlsP
     <div className="mt-4">
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="secondary" size="small" onClick={() => setIsEditing(true)}>Edit details</Button>
-        <Button variant="secondary" size="small" disabled={isBusy} onClick={handleRefresh}>Check for new episodes</Button>
+        {show.feed_url && <Button variant="secondary" size="small" disabled={isBusy} onClick={handleRefresh}>Check for new episodes</Button>}
         <Button variant="secondary" size="small" onClick={() => setIsConfirmingRemove(true)}>Remove show</Button>
         {status && <p role="status" className="text-body-medium text-text-secondary">{status}</p>}
       </div>
@@ -96,7 +96,9 @@ export function ImportedShowControls ({ show, onChanged }: ImportedShowControlsP
       <Modal size="sm" isOpen={isConfirmingRemove} onOpenChange={setIsConfirmingRemove}>
         <ModalHeader title={`Remove ${show.name}?`} />
         <ModalBody>
-          <p className="text-body-regular text-text-secondary">This removes the show, its episodes, and your favorites and saved places for them. You can add the feed again later.</p>
+          <p className="text-body-regular text-text-secondary">{show.feed_url
+            ? 'This removes the show, its episodes, and your favorites and saved places for them. You can add the feed again later.'
+            : 'This permanently deletes the show, your uploaded files, and your favorites and saved places for them.'}</p>
         </ModalBody>
         <ModalFooter>
           <Button variant="secondary" onClick={() => setIsConfirmingRemove(false)}>Keep show</Button>

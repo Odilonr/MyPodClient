@@ -9,6 +9,7 @@ import { Input } from '@/components/base/input/input'
 import { Cover } from '@/components/Cover'
 import { LogInPrompt } from '@/components/LogInPrompt'
 import { ShowGrid } from '@/components/ShowGrid'
+import { UploadAudio } from '@/library/UploadAudio'
 import { formatDate, formatDuration } from '@/utils/format'
 
 const messageFrom = (err: unknown) => (err instanceof ApiError
@@ -67,14 +68,15 @@ export function AddPodcastPage () {
   return (
     <>
       <h1 className="pb-2 pt-2 font-display text-[clamp(2.25rem,5vw,3.75rem)] font-bold leading-none tracking-tight">Add a podcast</h1>
-      <p className="mb-5 max-w-[65ch] text-body-regular text-text-secondary">
-        Paste the RSS feed link of a public podcast. It stays private to you, keeps its original credit, and plays from the podcast's own website. Paid and exclusive shows have no public feed, so they cannot be added.
-      </p>
 
       {!signedIn ? (
         <LogInPrompt message="Log in to add podcasts to your library." />
       ) : (
         <>
+          <h2 className="mb-1 mt-4 font-display text-[28px] font-bold leading-tight tracking-tight">From an RSS feed</h2>
+          <p className="mb-4 max-w-[65ch] text-body-regular text-text-secondary">
+            Paste the feed link of a public podcast, audio or video. It stays private to you, keeps its original credit, and plays from the podcast's own website. Paid and exclusive shows have no public feed, and YouTube feeds have no playable file, so they cannot be added.
+          </p>
           <form onSubmit={handleFind} className="flex max-w-2xl flex-wrap items-end gap-2">
             <Input
               className="min-w-64 flex-1"
@@ -123,6 +125,14 @@ export function AddPodcastPage () {
               </div>
             </form>
           )}
+
+          <section className="mt-10">
+            <h2 className="mb-1 font-display text-[28px] font-bold leading-tight tracking-tight">From an audio file</h2>
+            <p className="mb-4 max-w-[65ch] text-body-regular text-text-secondary">
+              Upload an episode you already have. MyPod fills in what it can from the file, and you choose the show and category.
+            </p>
+            <UploadAudio />
+          </section>
 
           {imported.length > 0 && (
             <section className="mt-10">

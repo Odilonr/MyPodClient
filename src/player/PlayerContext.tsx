@@ -70,6 +70,14 @@ export function PlayerProvider ({ children }: { children: ReactNode }) {
     setIsLoading(true)
     setMessage(null)
     let startAt = 0
+    let source: string
+    try {
+      source = await api.playableUrl(next)
+    } catch {
+      setIsLoading(false)
+      setMessage('This episode could not be played. Log in again and try once more.')
+      return
+    }
     if (signedIn) {
       try {
         startAt = await api.getPlayPosition(next.id)
@@ -85,7 +93,7 @@ export function PlayerProvider ({ children }: { children: ReactNode }) {
     setCurrentTime(startAt)
     setDuration(next.duration ?? 0)
     startAtRef.current = startAt
-    audio.src = api.audioUrl(next)
+    audio.src = source
     try {
       await audio.play()
     } catch (err) {

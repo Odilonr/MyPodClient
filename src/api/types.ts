@@ -9,6 +9,7 @@ export interface Show {
   show_type: string
   // Set when a user imported this show from an RSS feed.
   owner_id?: string | null
+  feed_url?: string | null
   source_link?: string | null
   episode_count?: number
 }
@@ -51,6 +52,11 @@ export interface FeedPreview {
   }
   episodeCount: number
   episodes: { title: string, duration: number | null, publishedAt: string }[]
+}
+
+export interface UploadResult {
+  episode: Episode
+  show: Show
 }
 
 export interface FieldError {
