@@ -1,0 +1,56 @@
+/* MyPod's own look, on top of the BoardUI tokens. Components keep using the
+ * semantic tokens, so changing a value here changes the whole app. */
+
+@theme {
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-paper: #eef2fa;
+  --color-ink: #131a3a;
+  --color-cobalt: #2b48d4;
+  --color-signal: #ff4f2e;
+  --color-butter: #ffe27a;
+  --color-dock-line: #4c5782;
+  --color-dock-text: #c6cee8;
+}
+
+:root {
+  --font-inter: "Instrument Sans Variable";
+
+  --color-accent-50: #eef1fd;
+  --color-accent-100: #dce2fb;
+  --color-accent-200: #bac6f6;
+  --color-accent-300: #94a6f0;
+  --color-accent-400: #6480e6;
+  --color-accent-500: #2b48d4;
+  --color-accent-600: #2439b3;
+  --color-accent-700: #1d2e91;
+  --color-accent-800: #172470;
+  --color-accent-900: #121c57;
+  --color-accent-950: #0c123a;
+
+  --color-text-primary: #131a3a;
+  --color-text-secondary: #4a5478;
+  --color-text-tertiary: #5f6a8f;
+  --color-background-full: #eef2fa;
+  --color-background-primary-default: #fafbfe;
+  --color-background-secondary-default: #e3e9f5;
+  --color-border-button-default: #cfd8ea;
+  --color-separator-border: #cfd8ea;
+  --color-separator-border-strong: #b9c4dc;
+}
+
+body {
+  background: var(--color-background-full);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+/* The scale marks of a radio band: a tall mark every tenth, short marks between. */
+.tuner-marks {
+  background-image:
+    repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 10%),
+    repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 1%);
+  background-size: 100% 100%, 100% 45%;
+  background-position: 0 0, 0 100%;
+  background-repeat: no-repeat;
+}
