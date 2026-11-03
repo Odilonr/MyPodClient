@@ -1,4 +1,4 @@
-import { RiCompass3Line, RiHeart3Line, RiHome5Line, RiPlayListLine, RiUser3Line } from '@remixicon/react'
+import { RiAddCircleLine, RiCompass3Line, RiHeart3Line, RiHome5Line, RiPlayListLine, RiUser3Line } from '@remixicon/react'
 import { Link, NavLink, Outlet } from 'react-router'
 import { useAuth } from '@/auth/AuthContext'
 import { AuthDialog } from '@/auth/AuthDialog'
@@ -13,7 +13,8 @@ const NAV_ITEMS = [
   { to: '/', label: 'Home', icon: RiHome5Line },
   { to: '/browse', label: 'Browse', icon: RiCompass3Line },
   { to: '/favorites', label: 'Favorites', icon: RiHeart3Line },
-  { to: '/playlists', label: 'Playlists', icon: RiPlayListLine }
+  { to: '/playlists', label: 'Playlists', icon: RiPlayListLine },
+  { to: '/add', label: 'Add a podcast', icon: RiAddCircleLine }
 ]
 
 function Wordmark ({ className }: { className?: string }) {

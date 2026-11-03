@@ -7,6 +7,10 @@ export interface Show {
   studio: string
   host_name: string
   show_type: string
+  // Set when a user imported this show from an RSS feed.
+  owner_id?: string | null
+  source_link?: string | null
+  episode_count?: number
 }
 
 export interface Episode {
@@ -18,6 +22,7 @@ export interface Episode {
   show_id: string
   show_name: string
   profile: string
+  audio_link?: string
 }
 
 export interface RecentEpisode extends Episode {
@@ -32,6 +37,19 @@ export interface Playlist {
 
 export interface PlaylistDetail extends Playlist {
   episodes: Episode[]
+}
+
+export interface FeedPreview {
+  show: {
+    name: string
+    description: string
+    author: string | null
+    image: string | null
+    link: string | null
+    category: string
+  }
+  episodeCount: number
+  episodes: { title: string, duration: number | null, publishedAt: string }[]
 }
 
 export interface FieldError {

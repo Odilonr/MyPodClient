@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { ApiError, getShow, getShowEpisodes } from '@/api/client'
 import type { Episode, Show } from '@/api/types'
+import { useAuth } from '@/auth/AuthContext'
 import { Skeleton, SkeletonText } from '@/components/base/skeleton/skeleton'
 import { Cover } from '@/components/Cover'
 import { EpisodeList } from '@/components/EpisodeList'
 import { LoadError } from '@/components/LoadError'
+import { ImportedShowControls } from '@/library/ImportedShowControls'
 import { isSample, withoutSampleLabel } from '@/utils/format'
 
 type PageState =
@@ -16,16 +18,20 @@ type PageState =
 
 export function ShowPage () {
   const { id = '' } = useParams()
+  const { status } = useAuth()
   const [state, setState] = useState<PageState>({ kind: 'loading' })
 
   const load = useCallback(() => {
-    setState({ kind: 'loading' })
     Promise.all([getShow(id), getShowEpisodes(id)])
       .then(([show, episodes]) => setState({ kind: 'ready', show, episodes }))
       .catch((err) => setState({ kind: err instanceof ApiError && err.status === 404 ? 'missing' : 'failed' }))
   }, [id])
 
-  useEffect(load, [load])
+  useEffect(() => {
+    if (status === 'checking') return
+    setState({ kind: 'loading' })
+    load()
+  }, [load, status])
 
   if (state.kind === 'loading') {
     return (
@@ -48,6 +54,7 @@ export function ShowPage () {
   }
 
   const { show, episodes } = state
+  const isImported = Boolean(show.owner_id)
   return (
     <>
       <div className="grid items-end gap-6 pb-8 pt-6 md:grid-cols-[280px_1fr]">
@@ -58,9 +65,17 @@ export function ShowPage () {
             {withoutSampleLabel(show.name)}
           </h1>
           <p className="mt-3 text-body-medium text-text-secondary">
-            {show.host_name}, {show.studio}. {show.release_schedule}.
+            {isImported
+              ? <>By {show.host_name}. Added by you from an RSS feed. {show.show_type}.</>
+              : <>{show.host_name}, {show.studio}. {show.release_schedule}.</>}
           </p>
-          <p className="mt-3 max-w-[65ch] text-body-regular">{show.description}</p>
+          {show.source_link && (
+            <a href={show.source_link} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-body-medium text-accent-600 underline underline-offset-2">
+              Visit the show's website
+            </a>
+          )}
+          <p className="mt-3 line-clamp-5 max-w-[65ch] text-body-regular">{show.description}</p>
+          {isImported && <ImportedShowControls show={show} onChanged={load} />}
         </div>
       </div>
       <h2 className="mb-3 font-display text-[28px] font-bold tracking-tight">Episodes</h2>

@@ -72,7 +72,9 @@ export function HomePage () {
       .catch(() => setFailed(true))
   }, [])
 
-  useEffect(load, [load])
+  useEffect(() => {
+    if (status !== 'checking') load()
+  }, [load, status])
 
   useEffect(() => {
     if (status === 'checking') return
@@ -101,7 +103,7 @@ export function HomePage () {
 
   const isEditing = draft !== null
   const sections = draft ?? savedLayout
-  const allSample = shows !== null && shows.length > 0 && shows.every((show) => isSample(show.name))
+  const hasSamples = shows !== null && shows.length > 0 && shows.some((show) => isSample(show.name))
 
   const choosableItems = useCallback((type: SectionType): ChoosableItem[] => {
     switch (type) {
@@ -208,9 +210,9 @@ export function HomePage () {
           <Button variant="secondary" leadingIcon={RiEqualizer2Line} className="mb-3" onClick={startEditing}>Customize home</Button>
         )}
       </div>
-      {allSample && (
+      {hasSamples && (
         <p className="max-w-[65ch] text-body-regular text-text-secondary">
-          These shows are sample data made for this demo. They are not real podcasts, and the audio is a generated tone.
+          Shows labeled as samples were made for this demo. They are not real podcasts, and their audio is a generated tone.
         </p>
       )}
 

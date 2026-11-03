@@ -78,8 +78,42 @@ describe('api client', () => {
     })
   })
 
-  it('builds audio links from the episode ID, not a file path', async () => {
+  it('builds catalog audio links from the episode ID, not a file path', async () => {
     const api = await loadClient()
-    expect(api.audioUrl('episode-1')).toBe('http://api.test/episodes/episode-1/audio')
+    expect(api.audioUrl({ id: 'episode-1', audio_link: 'audios/secret/path.mp3' })).toBe('http://api.test/episodes/episode-1/audio')
+  })
+
+  it('plays an imported episode from its own web address', async () => {
+    const api = await loadClient()
+    expect(api.audioUrl({ id: 'episode-1', audio_link: 'https://cdn.example.com/one.mp3' })).toBe('https://cdn.example.com/one.mp3')
+  })
+
+  it('never uses a link that is not a web address', async () => {
+    const api = await loadClient()
+    expect(api.audioUrl({ id: 'episode-1', audio_link: 'javascript:alert(1)' })).toBe('http://api.test/episodes/episode-1/audio')
+  })
+
+  it('refreshes an expired token on a public request', async () => {
+    fetchMock
+      .mockResolvedValueOnce(json({ accessToken: 'old' }))
+      .mockResolvedValueOnce(new Response(null, { status: 403 }))
+      .mockResolvedValueOnce(json({ accessToken: 'new' }))
+      .mockResolvedValueOnce(json([{ id: 'show-1' }]))
+    const api = await loadClient()
+    await api.logIn('listener', 'correct-horse')
+    await expect(api.getShows()).resolves.toEqual([{ id: 'show-1' }])
+    expect(new Headers(fetchMock.mock.calls[3][1].headers).get('Authorization')).toBe('Bearer new')
+  })
+
+  it('continues as a guest when a public request cannot refresh', async () => {
+    fetchMock
+      .mockResolvedValueOnce(json({ accessToken: 'old' }))
+      .mockResolvedValueOnce(new Response(null, { status: 403 }))
+      .mockResolvedValueOnce(new Response(null, { status: 403 }))
+      .mockResolvedValueOnce(json([]))
+    const api = await loadClient()
+    await api.logIn('listener', 'correct-horse')
+    await expect(api.getShows()).resolves.toEqual([])
+    expect(new Headers(fetchMock.mock.calls[3][1].headers).get('Authorization')).toBeNull()
   })
 })

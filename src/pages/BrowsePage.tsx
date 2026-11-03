@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { getShows } from '@/api/client'
 import type { Show } from '@/api/types'
+import { useAuth } from '@/auth/AuthContext'
 import { Input } from '@/components/base/input/input'
 import { Skeleton } from '@/components/base/skeleton/skeleton'
 import { LoadError } from '@/components/LoadError'
@@ -11,6 +12,7 @@ import { cx } from '@/utils/cx'
 import { withoutSampleLabel } from '@/utils/format'
 
 export function BrowsePage () {
+  const { status } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const topic = searchParams.get('topic')
   const [shows, setShows] = useState<Show[] | null>(null)
@@ -22,7 +24,9 @@ export function BrowsePage () {
     getShows().then(setShows).catch(() => setFailed(true))
   }, [])
 
-  useEffect(load, [load])
+  useEffect(() => {
+    if (status !== 'checking') load()
+  }, [load, status])
 
   const topics = useMemo(() => [...new Set((shows ?? []).map((show) => show.show_type))].sort(), [shows])
   const matches = useMemo(() => {

@@ -1,6 +1,6 @@
 import { API_URL } from '@/config'
 import type { LayoutSection } from '@/home/layout'
-import type { Episode, FieldError, Playlist, PlaylistDetail, RecentEpisode, Show } from './types'
+import type { Episode, FeedPreview, FieldError, Playlist, PlaylistDetail, RecentEpisode, Show } from './types'
 
 export class ApiError extends Error {
   status: number
@@ -64,6 +64,15 @@ async function sendWithLogin (path: string, init: RequestInit = {}) {
   return send(path, init)
 }
 
+// Sends a public request. A logged-in user also sees their private shows, so an
+// expired token is refreshed first. With no valid session, it goes as a guest.
+async function sendPublic (path: string) {
+  const response = await send(path)
+  if (response.status !== 401 && response.status !== 403) return response
+  await refreshSession()
+  return send(path)
+}
+
 export const hasSession = () => accessToken !== null
 
 export async function logIn (username: string, password: string) {
@@ -82,19 +91,19 @@ export async function logOut () {
 }
 
 export async function getShows () {
-  return readJson<Show[]>(await send('/shows'))
+  return readJson<Show[]>(await sendPublic('/shows'))
 }
 
 export async function getShow (id: string) {
-  return readJson<Show>(await send(`/shows/${encodeURIComponent(id)}`))
+  return readJson<Show>(await sendPublic(`/shows/${encodeURIComponent(id)}`))
 }
 
 export async function getShowEpisodes (id: string) {
-  return readJson<Episode[]>(await send(`/shows/${encodeURIComponent(id)}/episodes`))
+  return readJson<Episode[]>(await sendPublic(`/shows/${encodeURIComponent(id)}/episodes`))
 }
 
 export async function getLatestEpisodes (limit = 8) {
-  return readJson<Episode[]>(await send(`/episodes?type=Latest&limit=${limit}`))
+  return readJson<Episode[]>(await sendPublic(`/episodes?type=Latest&limit=${limit}`))
 }
 
 export async function getPlayPosition (episodeId: string) {
@@ -159,4 +168,32 @@ export async function saveLayout (sections: LayoutSection[]) {
   return readJson<{ sections: LayoutSection[] }>(response)
 }
 
-export const audioUrl = (episodeId: string) => `${API_URL}/episodes/${encodeURIComponent(episodeId)}/audio`
+export async function previewFeed (url: string) {
+  return readJson<FeedPreview>(await sendWithLogin('/me/feeds/preview', { method: 'POST', body: JSON.stringify({ url }) }))
+}
+
+export async function importFeed (url: string, name: string, category: string) {
+  return readJson<Show>(await sendWithLogin('/me/feeds', { method: 'POST', body: JSON.stringify({ url, name, category }) }))
+}
+
+export async function getFeeds () {
+  return readJson<Show[]>(await sendWithLogin('/me/feeds'))
+}
+
+export async function editFeed (id: string, name: string, category: string) {
+  return readJson<Show>(await sendWithLogin(`/me/feeds/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify({ name, category }) }))
+}
+
+export async function refreshFeed (id: string) {
+  return readJson<{ added: number }>(await sendWithLogin(`/me/feeds/${encodeURIComponent(id)}/refresh`, { method: 'POST' }))
+}
+
+export async function deleteFeed (id: string) {
+  await readJson(await sendWithLogin(`/me/feeds/${encodeURIComponent(id)}`, { method: 'DELETE' }))
+}
+
+// Imported episodes play from the podcast's own server. Catalog episodes are
+// asked for by ID, and the API finds the file.
+export function audioUrl ({ id, audio_link: link }: Pick<Episode, 'id' | 'audio_link'>) {
+  return link && /^https?:\/\//i.test(link) ? link : `${API_URL}/episodes/${encodeURIComponent(id)}/audio`
+}

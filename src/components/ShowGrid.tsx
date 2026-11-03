@@ -23,7 +23,9 @@ export function ShowGrid ({ shows, compact = false }: { shows: Show[], compact?:
               isSample(show.name) && <p className="mt-0.5 text-caption-1-medium text-text-secondary">Sample show</p>
             ) : (
               <p className="mt-0.5 text-body-regular text-text-secondary">
-                {isSample(show.name) ? 'Sample show, ' : ''}{show.show_type.toLowerCase()}, {show.release_schedule.toLowerCase()}
+                {show.owner_id
+                  ? show.show_type
+                  : <>{isSample(show.name) ? 'Sample show, ' : ''}{show.show_type.toLowerCase()}, {show.release_schedule.toLowerCase()}</>}
               </p>
             )}
           </Link>

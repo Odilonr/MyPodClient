@@ -83,7 +83,7 @@ export function PlayerProvider ({ children }: { children: ReactNode }) {
     setCurrentTime(startAt)
     setDuration(next.duration ?? 0)
     startAtRef.current = startAt
-    audio.src = api.audioUrl(next.id)
+    audio.src = api.audioUrl(next)
     try {
       await audio.play()
     } catch (err) {

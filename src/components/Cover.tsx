@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { cx } from '@/utils/cx'
 
 const PALETTES = [
@@ -63,8 +64,18 @@ export const coverPalette = (seed: string) => PALETTES[hash(seed) % PALETTES.len
 // Draws original cover art from the show's ID. A show with its own image link,
 // such as an imported feed, shows that image instead.
 export function Cover ({ seed, image, className }: { seed: string, image?: string, className?: string }) {
-  if (image && /^https?:\/\//i.test(image)) {
-    return <img src={image} alt="" loading="lazy" className={cx('aspect-square object-cover', className)} />
+  const [imageFailed, setImageFailed] = useState(false)
+  if (image && !imageFailed && /^https?:\/\//i.test(image)) {
+    return (
+      <img
+        src={image}
+        alt=""
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        onError={() => setImageFailed(true)}
+        className={cx('aspect-square object-cover', className)}
+      />
+    )
   }
   const value = hash(seed)
   const palette = PALETTES[value % PALETTES.length]
